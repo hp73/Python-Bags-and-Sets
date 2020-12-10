@@ -134,6 +134,8 @@ if __name__ == "__main__":
     a.add("hi")
     a.add("bye")
     a.add("cat")
+    a.add("2")
+    a.add("1")
 
     print(a)
     print(type(a + b))

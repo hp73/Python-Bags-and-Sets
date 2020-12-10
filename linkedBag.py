@@ -110,7 +110,25 @@ class LinkedBag(AbstractBag):
         
 
 if __name__ == "__main__":
-    a = LinkedBag(["hi", "bye", "cat"])
+    #a = LinkedBag(["hi", "bye", "cat"])
+    #b = LinkedBag(["a", "b", "c"])
+    a = LinkedBag()
     b = LinkedBag(["a", "b", "c"])
 
+    a.add("hi")
+    a.add("bye")
+    a.add("cat")
+
+    print(a)
+    print(type(a + b))
     print(a + b)
+    
+
+    a2 = LinkedBag(a)
+    print(a2)
+
+    for item in a:
+        print(item)
+
+    a.clear()
+    print(a)
