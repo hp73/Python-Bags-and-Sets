@@ -1,31 +1,61 @@
-class AbstractBag(object):
+from abstractCollection import AbstractCollection
+from arrays import Array
 
+class AbstractBag(AbstractCollection):
+    
+    # Class variables
+    DEFAULT_CAPACITY = 10
 
+    # Constructor
     def __init__(self, sourceCollection = None):
         """Sets the initial state of self,
             which includes the contents of sourceCollection,
             if it is present."""
+        super().__init__(sourceCollection)
+        
+    #Acessor Methods
+    def count(self, item):
+        ''' this notes each time that a certain value is in a linked structre '''
+        count = 0
 
-        self._size = 0
-        self._modCount = 0
+        for i in self:
+            if i == item:
+                count += 1
+        return count        
 
-        if sourceCollection:
-            for item in sourceCollection:
-                self.add(item)
-                
-    def isEmpty(self):
-        return len(self) == 0
-
-    def __len__(self):
-        return self._size
-    
-    def __str__(self):
-        return "{" + ", ".join(map(str, self)) + "}"
-
-    def __add__(self, other):
-        result = type(self)(self)
-
+    def __eq__(self, other):
+        """Returns True if self equals other,
+        or False otherwise."""
+        if other is self:
+            return True
+        if len(other) != len(self):
+            return False
+        if len(other) != len(self):
+            return False
+        if type(other) != type(self):
+            return False
         for item in other:
-            result.add(item)
+            if self.count(item) != other.count(item):
+                return False
+            else:
+                return True  
+    
+    def grow(self):
+        """Doubles in size"""
+        tempArray = Array(len(self) * 2)
+        for i in range(len(self)):
+            tempArray[i] = self._items[i]
+        self._items = tempArray
+        pass
 
-        return result
+    def shrink(self):
+        """Becomes half the current size, does not become smaller than
+             initial capacity."""
+        half = int(len(self._items) / 2)
+        halfArray = Array(half)
+        if half > AbstractBag.DEFAULT_CAPACITY:
+            for i in range(len(self)):
+                halfArray[i] = self._items[i]
+            self._items = halfArray
+        else:
+            pass

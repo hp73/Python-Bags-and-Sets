@@ -22,49 +22,28 @@ class LinkedBag(AbstractBag):
     # Accessor Methods
 
     def __iter__(self):
+        before = super().getModCount()
         cursor = self._items
 
         while cursor != None:
             yield cursor.data
-            cursor = cursor.next
-
-    def count(self, item):
-        ''' this notes each time that a certain value is in a linked structre '''
-        count = 0
-
-        for i in self:
-            if i == item:
-                count += 1
-        return count
-        
-
-    def __eq__(self, other):
-        """Returns True if self equals other,
-        or False otherwise."""
-        if other is self:
-            return True
-        if len(other) != len(self):
-            return False
-        if len(other) != len(self):
-            return False
-        if type(other) != type(self):
-            return False
-        for item in other:
-            if self.count(item) != other.count(item):
-                return False
+            after = super().getModCount()
+            
+            if before == after:
+                cursor = cursor.next
             else:
-                return True
-
-    
-
+                raise AttributeError("Illegal modification of the backing store.")
+        
     # Mutator Methods
     def clear(self):
         self._size = 0
         self._items = None
+        super().resetSizeAndModCount()
 
     def add(self, item):
         self._items = Node(item, self._items)
         self._size += 1
+        super().incModCount()
 
     def remove(self, item):
         """Precondition: item is in self.
@@ -72,6 +51,9 @@ class LinkedBag(AbstractBag):
         Postcondition: item is removed from self."""
         cursor = self._items
         trailer = None
+
+        if item not in self:
+            raise IndexError("item is removed from self")
         
         for i in self:
             if item == i:
@@ -81,33 +63,13 @@ class LinkedBag(AbstractBag):
 
         if cursor == self._items:
             self._items = None
+            
         else:
             trailer.next = cursor
+        
             
         self._size -= 1
-        
-
-    def grow(self):
-        """Doubles in size"""
-        tempArray = Array(len(self) * 2)
-        for i in range(len(self)):
-            tempArray[i] = self._items[i]
-        self._items = tempArray
-        pass
-
-    def shrink(self):
-        """Becomes half the current size, does not become smaller than
-             initial capacity."""
-        half = int(len(self._items) / 2)
-        halfArray = Array(half)
-        if half > ArrayBag.DEFAULT_CAPACITY:
-            for i in range(len(self)):
-                halfArray[i] = self._items[i]
-            self._items = halfArray
-        else:
-            pass
-
-        
+        super().incModCount()
 
 if __name__ == "__main__":
     #a = LinkedBag(["hi", "bye", "cat"])

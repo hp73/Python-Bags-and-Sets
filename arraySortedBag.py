@@ -44,29 +44,12 @@ class ArraySortedBag(AbstractBag):
             cursor += 1
 
 
-    def __eq__(self, other):
-        """Returns True if self equals other,
-        or False otherwise."""
-        if other is self:
-            return True
-        if len(other) != len(self):
-            return False
-        if len(other) != len(self):
-            return False
-        if type(other) != type(self):
-            return False
-        otherIter = iter(other)
-        for item in self:
-            if item != next(otherIter):
-                return False
-        return True
-
     # Mutator Methods
     def clear(self):
         self._size = 0
         self._items = Array(ArraySortedBag.DEFAULT_CAPACITY)
-        self._modCount += 1
-
+        super().resetSizeAndModCount()
+        
     def add(self, item):
         # resize here if needed
 
@@ -86,7 +69,7 @@ class ArraySortedBag(AbstractBag):
             self._items[j] = self._items[j -1]
         self._items[newIndex] = item
         self._size += 1
-
+        super().incModCount()
 
     def remove(self, item):
         """Precondition: item is in self.
@@ -105,27 +88,7 @@ class ArraySortedBag(AbstractBag):
         self._size -= 1
         if self._size < .25*len(self._items):
             self.shrink()
-
-    def grow(self):
-        """Doubles in size"""
-        tempArray = Array(len(self) * 2)
-        for i in range(len(self)):
-            tempArray[i] = self._items[i]
-        self._items = tempArray
-        pass
-
-    def shrink(self):
-        """Becomes half the current size, does not become smaller than
-             initial capacity."""
-        half = int(len(self._items) / 2)
-        halfArray = Array(half)
-        if half > ArraySortedBag.DEFAULT_CAPACITY:
-            for i in range(len(self)):
-                halfArray[i] = self._items[i]
-            self._items = halfArray
-        else:
-            pass
-                
+        super().incModCount() 
 
 if __name__ == "__main__":
     a = ArraySortedBag()

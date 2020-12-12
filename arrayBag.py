@@ -1,6 +1,6 @@
 """
 File: arrayBag.py
-Project: 4
+Project: 4,5
 Author: James Lawson, Harrison Pinkerton, Laruie Jones
 A tester program for bag implementations.
 """
@@ -35,37 +35,11 @@ class ArrayBag(AbstractBag):
                 raise AttributeError("Cannot modify!")
             cursor += 1
 
-    def count(self, item):
-        ''' this notes each time that a certain value is in a linked structre '''
-        count = 0
-
-        for i in self:
-            if i == item:
-                count += 1
-        return count
-
-    def __eq__(self, other):
-        """Returns True if self equals other,
-        or False otherwise."""
-        if other is self:
-            return True
-        if len(other) != len(self):
-            return False
-        if len(other) != len(self):
-            return False
-        if type(other) != type(self):
-            return False
-        for item in other:
-            if self.count(item) != other.count(item):
-                return False
-            else:
-                return True    
-
     # Mutator Methods
     def clear(self):
         self._size = 0
         self._items = Array(ArrayBag.DEFAULT_CAPACITY)
-        self._modCount += 1
+        super().resetSizeAndModCount()
 
     def add(self, item):
         # resize here if needed
@@ -74,7 +48,7 @@ class ArrayBag(AbstractBag):
         
         self._items[len(self)] = item
         self._size += 1
-        self._modCount += 1
+        super().incModCount()
 
     def remove(self, item):
         """Precondition: item is in self.
@@ -93,26 +67,7 @@ class ArrayBag(AbstractBag):
         self._size -= 1
         if self._size < .25*len(self._items):
             self.shrink()
-
-    def grow(self):
-        """Doubles in size"""
-        tempArray = Array(len(self) * 2)
-        for i in range(len(self)):
-            tempArray[i] = self._items[i]
-        self._items = tempArray
-        pass
-
-    def shrink(self):
-        """Becomes half the current size, does not become smaller than
-             initial capacity."""
-        half = int(len(self._items) / 2)
-        halfArray = Array(half)
-        if half > ArrayBag.DEFAULT_CAPACITY:
-            for i in range(len(self)):
-                halfArray[i] = self._items[i]
-            self._items = halfArray
-        else:
-            pass
+        super().incModCount()
                 
 
 if __name__ == "__main__":
